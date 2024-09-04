@@ -1,0 +1,4 @@
+Serial Number,Firmware Version,Date/Time,Coincidence Mode,Acquisition Time,Coincidences,Tile-A,Tile-B,Tile-C,Hits Per Minute,Pressure,Altitude,Temperature,Humidity
+49725,53,03/09/2024 14:55:45,AB,600,6,1869,1746,0,1.6666666E-4,984.57,271.75,26.92,58.48
+49725,53,03/09/2024 15:05:45,AB,600,15,1862,1712,0,4.1666668E-4,984.53,272.08,26.89,57.89
+49725,53,03/09/2024 15:15:46,AB,600,10,1783,1762,0,2.7777778E-4,984.51,272.25,26.87,57.28
