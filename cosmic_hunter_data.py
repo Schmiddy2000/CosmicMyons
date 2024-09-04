@@ -23,6 +23,22 @@ filenames_laptop = [
     "MessungBasement8_10min_1_Untergrund2.csv"
 ]
 
+filenames_computer = [
+    "Messung1_30min_1.csv",
+    "Messung2_10min_14.csv",
+    "Messung3_10min_3_D1.csv",
+    "Messung4_10min_3_D2.csv",
+    "Messung5_10min_3_random.csv",
+    "MessungD21_10min_3_30grad.csv",
+    "MessungD22_10min_3_60grad.csv",
+    "MessungD23_10min_3_90grad.csv",
+    "MessungD24_10min_3.csv",
+    "MessungD25_10min_3_30gradcw.csv",
+    "MessungD26_10min_3_60gradcw.csv",
+    "MessungD27_10min_3_90gradcw.csv",
+    "MessungNacht_1h_13.csv"
+]
+
 file_names_outside = [
     "Messung5Drausen_10min_1_90Gradccw.csv",
     "Messung4drausen_10min_1_60gradccw.csv",
@@ -81,5 +97,5 @@ plt.errorbar(angle_range_whole, hits_per_second_data, hits_per_second_error_data
 plt.xlim(-105, 105)
 plt.tight_layout()
 plt.legend()
-plt.savefig('angular_dependence_of_muon_detections.png', dpi=200)
+# plt.savefig('angular_dependence_of_muon_detections.png', dpi=200)
 plt.show()
