@@ -70,39 +70,107 @@ v_path_3 = "/Users/lucas1/Downloads/IMG_8417_first_part.mp4"
 v_path_4 = "/Users/lucas1/Downloads/IMG_8417_first_and_second_start.mp4"
 final_v_path = "/Users/lucas1/Downloads/IMG_8417 2.mp4"
 
+new_v_path = "/Users/lucas1/Downloads/2024-09-03 17-27-08_kurz.mp4"
+new_v_path_1 = "/Users/lucas1/Downloads/2024-09-03 17-27-08_longer.mp4"
+new_v_path_2 = "/Users/lucas1/Downloads/2024-09-03 17-27-08_measurement_1.mp4"
+new_v_path_3 = "/Users/lucas1/Downloads/2024-09-03 17-27-08_measurement_2.mp4"
+new_v_path_4 = "/Users/lucas1/Downloads/2024-09-03 17-27-08_measurement_3.mp4"
+new_v_path_5 = "/Users/lucas1/Downloads/2024-09-03 17-27-08_measurement_4.mp4"
+new_v_path_6 = "/Users/lucas1/Downloads/2024-09-03 17-27-08_measurement_5.mp4"
+new_v_path_7 = "/Users/lucas1/Downloads/2024-09-03 17-27-08_measurement_6.mp4"
+
 # Beispielnutzung
 extract_frames(final_v_path, 1, 'extracted_frames')
 
 
 # Preprocess the images to reduce noise and make the shapes more apparent.
 # This greatly improves the performance of the OCR program
-def preprocess_image(image_path):
+def preprocess_image(image_path, rescale: bool = False):
     image = cv2.imread(image_path)
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    _, threshold_image = cv2.threshold(gray_image, 80, 255, cv2.THRESH_BINARY)
+
+    if rescale:
+        rescaled_image = cv2.resize(gray_image, None, fx=0.1, fy=0.1, interpolation=cv2.INTER_AREA)
+        # gray_image = cv2.cvtColor(rescaled_image, cv2.COLOR_BGR2GRAY)
+
+    _, threshold_image = cv2.threshold(gray_image, 70, 255, cv2.THRESH_BINARY)
     denoised_image = cv2.fastNlMeansDenoising(threshold_image, None, 30, 7, 21)
+
+    if rescale:
+        return rescaled_image
+
     return denoised_image
+
+
+# def preprocess_image(image_path, rescale: bool = False):
+#     # Read the image
+#     image = cv2.imread(image_path)
+#
+#     # Convert the image to grayscale (first time)
+#     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#
+#     if rescale:
+#         # Rescale the grayscale image
+#         rescaled_image = cv2.resize(gray_image, None, fx=0.1, fy=0.1, interpolation=cv2.INTER_AREA)
+#
+#         # Convert the rescaled image to grayscale again
+#         # rescaled_gray_image = cv2.cvtColor(rescaled_image, cv2.COLOR_GRAY2BGR)  # Convert back to 3 channels first
+#         # rescaled_gray_image = cv2.cvtColor(rescaled_gray_image, cv2.COLOR_BGR2GRAY)  # Grayscale again
+#
+#         # Apply thresholding and denoising on the rescaled grayscale image
+#         _, threshold_image = cv2.threshold(rescaled_image, 100, 255, cv2.THRESH_BINARY)
+#         # denoised_image = cv2.fastNlMeansDenoising(threshold_image, None, 30, 7, 21)
+#
+#         return threshold_image  # Return the processed rescaled image
+#
+#     else:
+#         # Apply thresholding and denoising on the original grayscale image
+#         _, threshold_image = cv2.threshold(gray_image, 70, 255, cv2.THRESH_BINARY)
+#         denoised_image = cv2.fastNlMeansDenoising(threshold_image, None, 30, 7, 21)
+#
+#         return denoised_image  # Return the processed non-rescaled image
 
 
 # Create cropped images for the regions in interest
 def crop_relevant_areas(image_path, counts_box, time_box, output_folder):
-    image = preprocess_image(image_path)
-    # image = cv2.imread(image_path)
-    # image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    counts_cropped = image[counts_box[1]:counts_box[3], counts_box[0]:counts_box[2]]
-    time_cropped = image[time_box[1]:time_box[3], time_box[0]:time_box[2]]
-
+    # if 'counts' in image_path:
+    #     image = preprocess_image(image_path, True)
+    # else:
+    #     image = preprocess_image(image_path)
+    
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
+    image = cv2.imread(image_path)
+    # counts_cropped = image[counts_box[1]:counts_box[3], counts_box[0]:counts_box[2]]
+    # image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # image = preprocess_image(image_path, True)
+    counts_cropped = image[counts_box[1]:counts_box[3], counts_box[0]:counts_box[2]]
     counts_output_path = os.path.join(output_folder, f'counts_{os.path.basename(image_path)}')
-    time_output_path = os.path.join(output_folder, f'time_{os.path.basename(image_path)}')
-
     cv2.imwrite(counts_output_path, counts_cropped)
+    counts_cropped = preprocess_image(counts_output_path, True)
+    cv2.imwrite(counts_output_path, counts_cropped)
+
+    time_cropped = image[time_box[1]:time_box[3], time_box[0]:time_box[2]]
+    time_output_path = os.path.join(output_folder, f'time_{os.path.basename(image_path)}')
     cv2.imwrite(time_output_path, time_cropped)
+    time_cropped = preprocess_image(time_output_path)
+    cv2.imwrite(time_output_path, time_cropped)
+    
+    
+    # counts_cropped = preprocess_image(image_path, True)
+    #
+    # image = preprocess_image(image_path)
+    # time_cropped = image[time_box[1]:time_box[3], time_box[0]:time_box[2]]
+    #
+    # time_output_path = os.path.join(output_folder, f'time_{os.path.basename(image_path)}')
+    #
+    # cv2.imwrite(counts_output_path, counts_cropped)
+    # cv2.imwrite(time_output_path, time_cropped)
 
 
 # Example usage:
+# Phone video
 x_max = 720 - 1
 y_max = 616 - 1
 
@@ -116,6 +184,20 @@ x2_time = 200
 y1_time = y_max - 75
 y2_time = y_max - 25
 
+# Screen recording
+# x_max = 1520 - 1
+# y_max = 828 - 1
+#
+# x1_counts = 750
+# x2_counts = 1120
+# y1_counts = 220
+# y2_counts = 350
+#
+# x1_time = int(x_max / 2) - 70
+# x2_time = int(x_max / 2) + 50
+# y1_time = 495
+# y2_time = 535
+
 counts_box = (x1_counts, y1_counts, x2_counts, y2_counts)  # Define these based on your needs
 time_box = (x1_time, y1_time, x2_time, y2_time)  # Define these based on your needs
 test_image_path = "extracted_frames/frame_0.png"
@@ -126,7 +208,7 @@ test_image_path = "extracted_frames/frame_0.png"
 # Extract the text from the images with the additional information to only expect digits
 def ocr_extraction(cropped_image_path):
     # text = pytesseract.image_to_string(Image.open(cropped_image_path))
-    custom_config = r'--oem 3 --psm 6 outputbase digits'
+    custom_config = r'--oem 3 --psm 7 outputbase digits'
     text = pytesseract.image_to_string(Image.open(cropped_image_path), config=custom_config).strip()
     return text
 
@@ -245,8 +327,9 @@ def clean_times_array(times_array, counts_array):
 
 extracted_times, extracted_counts = clean_times_array(times, counts)
 
-save_to_json('test_data_1.json', extracted_times, extracted_counts)
+save_to_json('shielding_measurement_1.json', extracted_times, extracted_counts)
 
+# save_to_json('test_data_1.json', times, counts)
 my_times, my_counts = read_from_json('test_data_1.json')
 
 print(my_times)

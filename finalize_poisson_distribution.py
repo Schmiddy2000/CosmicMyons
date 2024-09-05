@@ -265,7 +265,7 @@ def plot_histograms_with_poisson_and_chisquare(one_diff, two_diff):
     axs[1].legend()
 
     plt.tight_layout()
-    plt.savefig('histogram_coincidence_counts_1_and_2', dpi=175)
+    plt.savefig('histogram_coincidence_counts_1_and_2', dpi=200)
     plt.show()
 
 
